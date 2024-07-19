@@ -1,65 +1,52 @@
-import { ViewIcon } from "@chakra-ui/icons";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
   Button,
-  useDisclosure,
   IconButton,
-  Text,
-  Image,
-} from "@chakra-ui/react";
+  Typography,
+  Avatar,
+} from "@mui/material";
+import { Visibility } from "@mui/icons-material";
+import { useState } from "react";
 
 const ProfileModal = ({ user, children }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   return (
     <>
       {children ? (
-        <span onClick={onOpen}>{children}</span>
+        <span onClick={handleOpen}>{children}</span>
       ) : (
-        <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+        <IconButton onClick={handleOpen}>
+          <Visibility />
+        </IconButton>
       )}
-      <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered>
-        <ModalOverlay />
-        <ModalContent h="410px">
-          <ModalHeader
-            fontSize="40px"
-            fontFamily="Work sans"
-            d="flex"
-            justifyContent="center"
-          >
-            {user.name}
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody
-            d="flex"
-            flexDir="column"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Image
-              borderRadius="full"
-              boxSize="150px"
-              src={user.pic}
-              alt={user.name}
-            />
-            <Text
-              fontSize={{ base: "28px", md: "30px" }}
-              fontFamily="Work sans"
-            >
-              Email: {user.email}
-            </Text>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>Close</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle sx={{ textAlign: "center", fontSize: "40px", fontFamily: "Work Sans" }}>
+          {user.name}
+        </DialogTitle>
+        <DialogContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", height: "410px" }}>
+          <Avatar
+            src={user.pic}
+            alt={user.name}
+            sx={{ width: 150, height: 150, borderRadius: "50%" }}
+          />
+          <Typography sx={{ fontSize: { xs: "28px", md: "30px" }, fontFamily: "Work Sans" }}>
+            Email: {user.email}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

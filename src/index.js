@@ -3,22 +3,20 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { ChakraProvider } from "@chakra-ui/react";
-import ChatProvider from "./Context/ChatProvider";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import { BrowserRouter } from "react-router-dom";
+import theme from "./theme"; // Import your custom theme
 
 ReactDOM.render(
-  <ChakraProvider>
-    <BrowserRouter>
-      <ChatProvider>
+  <React.StrictMode>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
         <App />
-      </ChatProvider>
-    </BrowserRouter>
-  </ChakraProvider>,
+      </BrowserRouter>
+    </ThemeProvider>
+  </React.StrictMode>,
   document.getElementById("root")
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

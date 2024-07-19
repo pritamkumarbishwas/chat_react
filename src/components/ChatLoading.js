@@ -1,21 +1,20 @@
-import { Stack } from "@chakra-ui/layout";
-import { Skeleton } from "@chakra-ui/skeleton";
+import { Stack, Skeleton } from "@mui/material";
 
 const ChatLoading = () => {
   return (
-    <Stack>
-      <Skeleton height="45px" />
-      <Skeleton height="45px" />
-      <Skeleton height="45px" />
-      <Skeleton height="45px" />
-      <Skeleton height="45px" />
-      <Skeleton height="45px" />
-      <Skeleton height="45px" />
-      <Skeleton height="45px" />
-      <Skeleton height="45px" />
-      <Skeleton height="45px" />
-      <Skeleton height="45px" />
-      <Skeleton height="45px" />
+    <Stack spacing={1}>
+      <Skeleton variant="rectangular" height={45} />
+      <Skeleton variant="rectangular" height={45} />
+      <Skeleton variant="rectangular" height={45} />
+      <Skeleton variant="rectangular" height={45} />
+      <Skeleton variant="rectangular" height={45} />
+      <Skeleton variant="rectangular" height={45} />
+      <Skeleton variant="rectangular" height={45} />
+      <Skeleton variant="rectangular" height={45} />
+      <Skeleton variant="rectangular" height={45} />
+      <Skeleton variant="rectangular" height={45} />
+      <Skeleton variant="rectangular" height={45} />
+      <Skeleton variant="rectangular" height={45} />
     </Stack>
   );
 };

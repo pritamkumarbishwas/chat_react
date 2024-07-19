@@ -1,24 +1,22 @@
-import { CloseIcon } from "@chakra-ui/icons";
-import { Badge } from "@chakra-ui/layout";
+import React from 'react';
+import { Chip, IconButton, Tooltip } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const UserBadgeItem = ({ user, handleFunction, admin }) => {
   return (
-    <Badge
-      px={2}
-      py={1}
-      borderRadius="lg"
-      m={1}
-      mb={2}
-      variant="solid"
-      fontSize={12}
-      colorScheme="purple"
-      cursor="pointer"
-      onClick={handleFunction}
-    >
-      {user.name}
-      {admin === user._id && <span> (Admin)</span>}
-      <CloseIcon pl={1} />
-    </Badge>
+    <Chip
+      label={
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {user.name}
+          {admin === user._id && <span style={{ marginLeft: '4px' }}>(Admin)</span>}
+        </div>
+      }
+      onDelete={handleFunction}
+      deleteIcon={<CloseIcon />}
+      style={{ margin: '4px', fontSize: '12px' }}
+      color="primary"
+      variant="outlined"
+    />
   );
 };
 
