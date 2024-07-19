@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   Button,
   TextField,
@@ -5,28 +6,35 @@ import {
   InputAdornment,
   Typography,
   Stack,
-  Box
-} from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { ChatState } from "../../Context/ChatProvider";
-  
+  Box,
+  Snackbar,
+  Alert
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';  // Ensure this import works
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ChatState } from '../../Context/ChatProvider';
+
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('error');
 
   const navigate = useNavigate();
   const { setUser } = ChatState();
 
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+
   const submitHandler = async () => {
     setLoading(true);
     if (!email || !password) {
-      alert("Please Fill all the Fields");
+      setSnackbarMessage('Please Fill all the Fields');
+      setSnackbarSeverity('warning');
+      setOpenSnackbar(true);
       setLoading(false);
       return;
     }
@@ -34,23 +42,27 @@ const Login = () => {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          'Content-type': 'application/json',
         },
       };
 
       const { data } = await axios.post(
-        "/api/user/login",
+        '/api/user/login',
         { email, password },
         config
       );
 
-      alert("Login Successful");
+      setSnackbarMessage('Login Successful');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
       setUser(data);
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      localStorage.setItem('userInfo', JSON.stringify(data));
       setLoading(false);
-      navigate("/chats");
+      navigate('/chats');
     } catch (error) {
-      alert("Error Occurred: " + error.response.data.message);
+      setSnackbarMessage('Error Occurred: ' + (error.response?.data?.message || 'Unknown Error'));
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
       setLoading(false);
     }
   };
@@ -77,7 +89,7 @@ const Login = () => {
         variant="outlined"
         fullWidth
         required
-        type={showPassword ? "text" : "password"}
+        type={showPassword ? 'text' : 'password'}
         placeholder="Enter password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
@@ -102,19 +114,34 @@ const Login = () => {
         onClick={submitHandler}
         disabled={loading}
       >
-        {loading ? "Logging In..." : "Login"}
+        {loading ? 'Logging In...' : 'Login'}
       </Button>
       <Button
         variant="outlined"
         color="secondary"
         fullWidth
         onClick={() => {
-          setEmail("guest@example.com");
-          setPassword("123456");
+          setEmail('guest@example.com');
+          setPassword('123456');
         }}
       >
         Get Guest User Credentials
       </Button>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Stack>
   );
 };

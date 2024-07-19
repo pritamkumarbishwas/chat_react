@@ -7,19 +7,19 @@ import {
   Typography,
   Paper
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';  // Updated import
 import Login from '../components/Authentication/Login';
 import Signup from '../components/Authentication/Signup';
 import TabPanel from '../components/TabPanel'; 
 
 function Homepage() {
   const [tabIndex, setTabIndex] = useState(0);
-  const navigate = useNavigate();
+  const navigate = useNavigate();  // Updated hook
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('userInfo'));
 
-    if (user) navigate('/chats');
+    if (user) navigate('/chats');  // Updated method
   }, [navigate]);
 
   const handleChange = (event, newValue) => {

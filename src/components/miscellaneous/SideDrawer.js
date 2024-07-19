@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -18,8 +19,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Search as SearchIcon, Notifications as NotificationsIcon, ChevronDown as ChevronDownIcon } from "@mui/icons-material";
-import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import ChatLoading from "../ChatLoading";
@@ -47,11 +47,11 @@ function SideDrawer() {
   } = ChatState();
 
   const { enqueueSnackbar } = useSnackbar();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("userInfo");
-    history.push("/");
+    navigate("/");
   };
 
   const handleSearch = async () => {
@@ -72,6 +72,7 @@ function SideDrawer() {
       setSearchResult(data);
     } catch (error) {
       enqueueSnackbar("Failed to Load the Search Results", { variant: "error" });
+      setLoading(false);
     }
   };
 
@@ -92,6 +93,7 @@ function SideDrawer() {
       setDrawerOpen(false);
     } catch (error) {
       enqueueSnackbar("Error fetching the chat", { variant: "error" });
+      setLoadingChat(false);
     }
   };
 
@@ -178,7 +180,7 @@ function SideDrawer() {
               ))}
             </List>
           )}
-          {loadingChat && <Spinner />}
+          {loadingChat && <ChatLoading />}
         </Box>
       </Drawer>
     </>
