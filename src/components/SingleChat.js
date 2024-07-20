@@ -19,7 +19,7 @@ import { getSender, getSenderFull } from '../config/ChatLogics';
 import axios from 'axios';
 
 const ENDPOINT = "https://backend-uk2f.onrender.com"; // Update this after deployment
-let socket, selectedChatCompare; 
+let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
