@@ -47,7 +47,7 @@ const Login = () => {
       };
 
       const { data } = await axios.post(
-        '/api/user/login', // Ensure this endpoint is correct
+        'https://backend-uk2f.onrender.com/api/user/login', // Ensure this endpoint is correct
         { email, password },
         config
       );
