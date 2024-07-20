@@ -1,17 +1,17 @@
-import { Add as AddIcon } from "@mui/icons-material";
-import { Box, Stack, Typography, Button } from "@mui/material";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { getSender } from "../config/ChatLogics";
-import ChatLoading from "./ChatLoading";
-import GroupChatModal from "./miscellaneous/GroupChatModal";
-import { ChatState } from "../Context/ChatProvider";
-import { useSnackbar } from "notistack";
+import React, { useEffect, useState } from 'react';
+import { Add as AddIcon } from '@mui/icons-material';
+import { Box, Stack, Typography, Button } from '@mui/material';
+import axios from 'axios';
+import { getSender } from '../config/ChatLogics';
+import ChatLoading from './ChatLoading';
+import GroupChatModal from './miscellaneous/GroupChatModal';
+import { useChat } from '../Context/ChatProvider'; // Updated import
+import { useSnackbar } from 'notistack';
 
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
 
-  const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
+  const { selectedChat, setSelectedChat, user, chats, setChats } = useChat(); // Updated hook
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -23,27 +23,28 @@ const MyChats = ({ fetchAgain }) => {
         },
       };
 
-      const { data } = await axios.get("/api/chat", config);
+      const { data } = await axios.get('/api/chat', config);
       setChats(data);
     } catch (error) {
-      enqueueSnackbar("Failed to Load the chats", { variant: "error" });
+      enqueueSnackbar('Failed to load the chats', { variant: 'error' });
     }
   };
 
   useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    setLoggedUser(userInfo);
     fetchChats();
     // eslint-disable-next-line
   }, [fetchAgain]);
 
   return (
     <Box
-      display={{ xs: selectedChat ? "none" : "flex", md: "flex" }}
+      display={{ xs: selectedChat ? 'none' : 'flex', md: 'flex' }}
       flexDirection="column"
       alignItems="center"
       padding={3}
       bgcolor="white"
-      width={{ xs: "100%", md: "31%" }}
+      width={{ xs: '100%', md: '31%' }}
       borderRadius="lg"
       border={1}
       borderColor="grey.300"
@@ -85,8 +86,8 @@ const MyChats = ({ fetchAgain }) => {
               <Box
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
-                bgcolor={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
-                color={selectedChat === chat ? "white" : "black"}
+                bgcolor={selectedChat === chat ? '#38B2AC' : '#E8E8E8'}
+                color={selectedChat === chat ? 'white' : 'black'}
                 paddingX={3}
                 paddingY={2}
                 borderRadius="lg"
@@ -99,9 +100,9 @@ const MyChats = ({ fetchAgain }) => {
                 </Typography>
                 {chat.latestMessage && (
                   <Typography variant="body2" fontSize="small">
-                    <b>{chat.latestMessage.sender.name} : </b>
+                    <b>{chat.latestMessage.sender.name}:</b>{' '}
                     {chat.latestMessage.content.length > 50
-                      ? chat.latestMessage.content.substring(0, 51) + "..."
+                      ? chat.latestMessage.content.substring(0, 51) + '...'
                       : chat.latestMessage.content}
                   </Typography>
                 )}

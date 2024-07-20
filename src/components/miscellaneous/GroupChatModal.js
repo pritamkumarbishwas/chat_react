@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
-import { ChatState } from "../../Context/ChatProvider";
+import { useChat } from "../../Context/ChatProvider"; // Import useChat instead of ChatState
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import UserListItem from "../userAvatar/UserListItem";
 
@@ -24,7 +24,8 @@ const GroupChatModal = ({ children }) => {
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { user, chats, setChats } = ChatState();
+  // Use useChat hook to access chat context
+  const { user, chats, setChats } = useChat();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -85,7 +86,7 @@ const GroupChatModal = ({ children }) => {
       handleClose();
       alert("New Group Chat Created!");
     } catch (error) {
-      alert("Failed to Create the Chat! " + error.response.data);
+      alert("Failed to Create the Chat! " + error.response?.data || error.message);
     }
   };
 

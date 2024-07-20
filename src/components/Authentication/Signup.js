@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   Button,
   TextField,
@@ -6,48 +7,48 @@ import {
   Stack,
   Typography,
   Box,
-} from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { ChatState } from "../../Context/ChatProvider";
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useChat } from '../../Context/ChatProvider'; // Corrected import
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmpassword, setConfirmpassword] = useState("");
-  const [pic, setPic] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmpassword, setConfirmpassword] = useState('');
+  const [pic, setPic] = useState('');
   const [picLoading, setPicLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { setUser } = ChatState();
+  const { setUser } = useChat(); // Corrected hook usage
+
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 
   const submitHandler = async () => {
     setPicLoading(true);
     if (!name || !email || !password || !confirmpassword) {
-      alert("Please Fill all the Fields");
+      alert('Please fill all the fields');
       setPicLoading(false);
       return;
     }
     if (password !== confirmpassword) {
-      alert("Passwords Do Not Match");
+      alert('Passwords do not match');
       setPicLoading(false);
       return;
     }
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          'Content-type': 'application/json',
         },
       };
       const { data } = await axios.post(
-        "/api/user",
+        '/api/user',
         {
           name,
           email,
@@ -56,13 +57,13 @@ const Signup = () => {
         },
         config
       );
-      alert("Registration Successful");
+      alert('Registration successful');
       setUser(data);
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      localStorage.setItem('userInfo', JSON.stringify(data));
       setPicLoading(false);
-      navigate("/chats");
+      navigate('/chats');
     } catch (error) {
-      alert("Error Occurred: " + error.response.data.message);
+      alert('Error occurred: ' + (error.response?.data?.message || 'Unknown error'));
       setPicLoading(false);
     }
   };
@@ -70,17 +71,17 @@ const Signup = () => {
   const postDetails = (pics) => {
     setPicLoading(true);
     if (pics === undefined) {
-      alert("Please Select an Image!");
+      alert('Please select an image!');
       setPicLoading(false);
       return;
     }
-    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+    if (pics.type === 'image/jpeg' || pics.type === 'image/png') {
       const data = new FormData();
-      data.append("file", pics);
-      data.append("upload_preset", "chat-app");
-      data.append("cloud_name", "piyushproj");
-      fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
-        method: "post",
+      data.append('file', pics);
+      data.append('upload_preset', 'chat-app');
+      data.append('cloud_name', 'piyushproj');
+      fetch('https://api.cloudinary.com/v1_1/piyushproj/image/upload', {
+        method: 'post',
         body: data,
       })
         .then((res) => res.json())
@@ -93,7 +94,7 @@ const Signup = () => {
           setPicLoading(false);
         });
     } else {
-      alert("Please Select an Image!");
+      alert('Please select an image!');
       setPicLoading(false);
     }
   };
@@ -110,7 +111,7 @@ const Signup = () => {
         variant="outlined"
         fullWidth
         required
-        placeholder="Enter Your Name"
+        placeholder="Enter your name"
         onChange={(e) => setName(e.target.value)}
       />
       <TextField
@@ -119,7 +120,7 @@ const Signup = () => {
         fullWidth
         required
         type="email"
-        placeholder="Enter Your Email Address"
+        placeholder="Enter your email address"
         onChange={(e) => setEmail(e.target.value)}
       />
       <TextField
@@ -127,8 +128,8 @@ const Signup = () => {
         variant="outlined"
         fullWidth
         required
-        type={showPassword ? "text" : "password"}
-        placeholder="Enter Password"
+        type={showPassword ? 'text' : 'password'}
+        placeholder="Enter password"
         onChange={(e) => setPassword(e.target.value)}
         InputProps={{
           endAdornment: (
@@ -149,8 +150,8 @@ const Signup = () => {
         variant="outlined"
         fullWidth
         required
-        type={showConfirmPassword ? "text" : "password"}
-        placeholder="Confirm Password"
+        type={showConfirmPassword ? 'text' : 'password'}
+        placeholder="Confirm password"
         onChange={(e) => setConfirmpassword(e.target.value)}
         InputProps={{
           endAdornment: (
@@ -171,14 +172,14 @@ const Signup = () => {
         color="primary"
         component="label"
         fullWidth
-        onChange={(e) => postDetails(e.target.files[0])}
         disabled={picLoading}
       >
-        {picLoading ? "Uploading..." : "Upload Your Picture"}
+        {picLoading ? 'Uploading...' : 'Upload Your Picture'}
         <input
           type="file"
           hidden
           accept="image/*"
+          onChange={(e) => postDetails(e.target.files[0])}
         />
       </Button>
       <Button

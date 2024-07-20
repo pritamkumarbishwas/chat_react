@@ -10,10 +10,10 @@ import {
   Snackbar,
   Alert
 } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';  // Ensure this import works
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ChatState } from '../../Context/ChatProvider';
+import { useChat } from '../../Context/ChatProvider'; // Corrected import
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,14 +25,14 @@ const Login = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState('error');
 
   const navigate = useNavigate();
-  const { setUser } = ChatState();
+  const { setUser } = useChat(); // Corrected hook usage
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const submitHandler = async () => {
     setLoading(true);
     if (!email || !password) {
-      setSnackbarMessage('Please Fill all the Fields');
+      setSnackbarMessage('Please fill all the fields');
       setSnackbarSeverity('warning');
       setOpenSnackbar(true);
       setLoading(false);
@@ -47,7 +47,7 @@ const Login = () => {
       };
 
       const { data } = await axios.post(
-        '/api/user/login',
+        '/api/user/login', // Ensure this endpoint is correct
         { email, password },
         config
       );
@@ -60,7 +60,7 @@ const Login = () => {
       setLoading(false);
       navigate('/chats');
     } catch (error) {
-      setSnackbarMessage('Error Occurred: ' + (error.response?.data?.message || 'Unknown Error'));
+      setSnackbarMessage('Error occurred: ' + (error.response?.data?.message || 'Unknown error'));
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
       setLoading(false);

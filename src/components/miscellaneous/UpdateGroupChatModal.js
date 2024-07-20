@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { ChatState } from "../../Context/ChatProvider";
+import { useChat } from "../../Context/ChatProvider"; // Use useChat instead of ChatState
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import UserListItem from "../userAvatar/UserListItem";
 import {
@@ -26,7 +26,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const { selectedChat, setSelectedChat, user } = ChatState();
+  const { selectedChat, setSelectedChat, user } = useChat(); // Use useChat hook
 
   const handleSearch = async (query) => {
     setSearch(query);

@@ -30,7 +30,7 @@ function Homepage() {
     <Container maxWidth="sm" sx={{ marginTop: 4 }}>
       <Paper elevation={3} sx={{ padding: 3, textAlign: 'center' }}>
         <Typography variant="h3" component="h1" gutterBottom>
-          Talk-A-Tive
+          Chat Application
         </Typography>
       </Paper>
       <Box sx={{ marginTop: 4 }}>

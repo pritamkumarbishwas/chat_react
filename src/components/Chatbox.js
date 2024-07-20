@@ -1,24 +1,28 @@
-import { Box } from "@mui/material";
-import "./styles.css";
-import SingleChat from "./SingleChat";
-import { ChatState } from "../Context/ChatProvider";
+import React from 'react';
+import { Box } from '@mui/material';
+import SingleChat from './SingleChat';
+import { useChat } from '../Context/ChatProvider'; // Updated import
 
 const Chatbox = ({ fetchAgain, setFetchAgain }) => {
-  const { selectedChat } = ChatState();
+  const { selectedChat } = useChat(); // Updated hook
 
   return (
     <Box
-      display={{ xs: selectedChat ? "flex" : "none", md: "flex" }}
+      display={{ xs: selectedChat ? 'flex' : 'none', md: 'flex' }}
       alignItems="center"
       flexDirection="column"
       p={3}
       bgcolor="white"
-      width={{ xs: "100%", md: "68%" }}
+      width={{ xs: '100%', md: '68%' }}
       borderRadius="8px"
       border={1}
       borderColor="grey.300"
     >
-      <SingleChat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+      {selectedChat ? (
+        <SingleChat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+      ) : (
+        <div>Select a chat to start messaging</div>
+      )}
     </Box>
   );
 };

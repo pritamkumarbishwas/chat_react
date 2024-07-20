@@ -2,9 +2,7 @@ import React from 'react';
 import { Avatar, Box, Typography, Tooltip } from '@mui/material';
 import { ChatState } from '../../Context/ChatProvider';
 
-const UserListItem = ({ handleFunction }) => {
-  const { user } = ChatState();
-
+const UserListItem = ({ user, handleFunction }) => {
   return (
     <Box
       onClick={handleFunction}

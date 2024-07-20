@@ -12,23 +12,23 @@ import {
   Avatar,
   Drawer,
   List,
-  ListItem,
-  ListItemText,
-  Typography,
   Box,
   Tooltip,
+  Typography,
 } from "@mui/material";
-import { Search as SearchIcon, Notifications as NotificationsIcon, ChevronDown as ChevronDownIcon } from "@mui/icons-material";
+import { Search as SearchIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import ChatLoading from "../ChatLoading";
 import ProfileModal from "./ProfileModal";
 import UserListItem from "../userAvatar/UserListItem";
-import { ChatState } from "../../Context/ChatProvider";
+import { useChat } from "../../Context/ChatProvider"; // Assuming useChat is properly defined
 import { getSender } from "../../config/ChatLogics";
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-function SideDrawer() {
+const SideDrawer = () => {
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ function SideDrawer() {
     setNotification,
     chats,
     setChats,
-  } = ChatState();
+  } = useChat();
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ function SideDrawer() {
 
   const handleSearch = async () => {
     if (!search) {
-      enqueueSnackbar("Please Enter something in search", { variant: "warning" });
+      enqueueSnackbar("Please enter something in the search", { variant: "warning" });
       return;
     }
 
@@ -68,10 +68,10 @@ function SideDrawer() {
         },
       };
       const { data } = await axios.get(`/api/user?search=${search}`, config);
-      setLoading(false);
       setSearchResult(data);
     } catch (error) {
-      enqueueSnackbar("Failed to Load the Search Results", { variant: "error" });
+      enqueueSnackbar("Failed to load the search results", { variant: "error" });
+    } finally {
       setLoading(false);
     }
   };
@@ -87,12 +87,14 @@ function SideDrawer() {
       };
       const { data } = await axios.post(`/api/chat`, { userId }, config);
 
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      if (!chats.find((c) => c._id === data._id)) {
+        setChats([data, ...chats]);
+      }
       setSelectedChat(data);
-      setLoadingChat(false);
       setDrawerOpen(false);
     } catch (error) {
       enqueueSnackbar("Error fetching the chat", { variant: "error" });
+    } finally {
       setLoadingChat(false);
     }
   };
@@ -119,7 +121,7 @@ function SideDrawer() {
             open={Boolean(notificationMenuAnchor)}
             onClose={() => setNotificationMenuAnchor(null)}
           >
-            {!notification.length && <MenuItem>No New Messages</MenuItem>}
+            {!notification.length ? <MenuItem>No New Messages</MenuItem> : null}
             {notification.map((notif) => (
               <MenuItem
                 key={notif._id}
@@ -141,7 +143,7 @@ function SideDrawer() {
             edge="end"
           >
             <Avatar src={user.pic} alt={user.name} />
-            <ChevronDownIcon />
+            <KeyboardArrowDownIcon />
           </IconButton>
           <Menu
             anchorEl={profileMenuAnchor}
@@ -185,6 +187,6 @@ function SideDrawer() {
       </Drawer>
     </>
   );
-}
+};
 
 export default SideDrawer;

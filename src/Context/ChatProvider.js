@@ -1,43 +1,51 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Updated import
+import { useNavigate } from "react-router-dom";
 
 const ChatContext = createContext();
 
 const ChatProvider = ({ children }) => {
-  const [selectedChat, setSelectedChat] = useState();
-  const [user, setUser] = useState();
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [user, setUser] = useState(null);
   const [notification, setNotification] = useState([]);
-  const [chats, setChats] = useState();
+  const [chats, setChats] = useState([]);
 
-  const navigate = useNavigate(); // Updated hook
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    setUser(userInfo);
-
-    if (!userInfo) navigate("/"); // Updated method
+    if (userInfo) {
+      setUser(userInfo);
+    } else {
+      navigate("/");
+    }
   }, [navigate]);
 
+  // Ensure that any component using the context throws an error if not wrapped in ChatProvider
+  const contextValue = {
+    selectedChat,
+    setSelectedChat,
+    user,
+    setUser,
+    notification,
+    setNotification,
+    chats,
+    setChats,
+  };
+
   return (
-    <ChatContext.Provider
-      value={{
-        selectedChat,
-        setSelectedChat,
-        user,
-        setUser,
-        notification,
-        setNotification,
-        chats,
-        setChats,
-      }}
-    >
+    <ChatContext.Provider value={contextValue}>
       {children}
     </ChatContext.Provider>
   );
 };
 
-export const ChatState = () => {
-  return useContext(ChatContext);
+// Custom hook for using the chat context
+export const useChat = () => {
+  const context = useContext(ChatContext);
+  if (context === undefined) {
+    throw new Error("useChat must be used within a ChatProvider");
+  }
+  return context;
 };
 
 export default ChatProvider;
