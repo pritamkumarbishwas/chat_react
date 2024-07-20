@@ -47,10 +47,10 @@ const Login = () => {
       };
 
       const { data } = await axios.post(
-        'https://backend-uk2f.onrender.com/api/user/login', // Ensure this endpoint is correct
+        '/api/user/login', // Ensure this endpoint is correct
         { email, password },
         config
-      );   
+      );
 
       setSnackbarMessage('Login Successful');
       setSnackbarSeverity('success');
