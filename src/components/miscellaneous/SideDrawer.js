@@ -109,7 +109,7 @@ const SideDrawer = () => {
             </IconButton>
           </Tooltip>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Talk-A-Tive
+            Chat Application
           </Typography>
           <IconButton color="inherit" onClick={(e) => setNotificationMenuAnchor(e.currentTarget)}>
             <Badge badgeContent={notification.length} color="secondary">
