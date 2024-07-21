@@ -39,7 +39,7 @@ const Login = () => {
       return;
     }
 
-    // try {
+    try {
       const config = {
         headers: {
           'Content-type': 'application/json',
@@ -59,13 +59,13 @@ const Login = () => {
       localStorage.setItem('userInfo', JSON.stringify(data));
       setLoading(false);
       navigate('/chats');
-    // } catch (error) {
-    //   console.log("error", error);
-    //   setSnackbarMessage('Error occurred: ' + (error.response?.data?.message || 'Unknown error'));
-    //   setSnackbarSeverity('error');
-    //   setOpenSnackbar(true);
-    //   setLoading(false);
-    // }
+    } catch (error) {
+      console.log("error", error);
+      setSnackbarMessage('Error occurred: ' + (error.response?.data?.message || 'Unknown error'));
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+      setLoading(false);
+    }
   };
 
   return (
