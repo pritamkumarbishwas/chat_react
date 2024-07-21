@@ -60,6 +60,7 @@ const Login = () => {
       setLoading(false);
       navigate('/chats');
     } catch (error) {
+      console.log("error", error);
       setSnackbarMessage('Error occurred: ' + (error.response?.data?.message || 'Unknown error'));
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
