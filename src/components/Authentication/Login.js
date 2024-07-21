@@ -46,7 +46,7 @@ const Login = () => {
         },
       };
 
-      const { data } = await axios.post(
+      const { data } = await axios.get(
         '/api/user/login', // Ensure this endpoint is correct
         { email, password },
         config
