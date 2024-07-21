@@ -11,7 +11,7 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useChat } from '../../Context/ChatProvider'; // Corrected import
+import { useChat } from '../../Context/ChatProvider';
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +24,7 @@ const Signup = () => {
   const [picLoading, setPicLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { setUser } = useChat(); // Corrected hook usage
+  const { setUser } = useChat();
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
