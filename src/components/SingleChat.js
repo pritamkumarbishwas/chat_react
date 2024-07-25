@@ -18,7 +18,7 @@ import { useChat } from '../Context/ChatProvider';
 import { getSender, getSenderFull } from '../config/ChatLogics';
 import axios from 'axios';
 
-const ENDPOINT = "http://localhost:5000"; // Update this after deployment
+const ENDPOINT = "https://backend-uk2f.onrender.com";
 let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
