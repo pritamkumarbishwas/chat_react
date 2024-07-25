@@ -14,7 +14,7 @@ import Lottie from 'react-lottie';
 import animationData from '../animations/typing.json';
 import io from 'socket.io-client';
 import UpdateGroupChatModal from './miscellaneous/UpdateGroupChatModal';
-import { useChat } from '../Context/ChatProvider'; // Use useChat instead of ChatState
+import { useChat } from '../Context/ChatProvider';
 import { getSender, getSenderFull } from '../config/ChatLogics';
 import axios from 'axios';
 
@@ -28,8 +28,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [editingMessage, setEditingMessage] = useState(null);
 
-  const { selectedChat, setSelectedChat, user, notification, setNotification } = useChat(); // Use useChat hook
+  const { selectedChat, setSelectedChat, user, notification, setNotification } = useChat();
   const { enqueueSnackbar } = useSnackbar();
 
   const defaultOptions = {
@@ -66,20 +67,41 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const sendMessage = async (event) => {
     if (event.key === 'Enter' && newMessage) {
-      socket.emit('stop typing', selectedChat._id);
-      try {
-        const config = {
-          headers: {
-            'Content-type': 'application/json',
-            Authorization: `Bearer ${user.token}`,
-          },
-        };
-        setNewMessage('');
-        const { data } = await axios.post('/api/message', { content: newMessage, chatId: selectedChat._id }, config);
-        socket.emit('new message', data);
-        setMessages((prevMessages) => [...prevMessages, data]);
-      } catch (error) {
-        enqueueSnackbar('Error occurred! Failed to send the message.', { variant: 'error' });
+      if (editingMessage) {
+        // Handle edit message
+        try {
+          const config = {
+            headers: {
+              'Content-type': 'application/json',
+              Authorization: `Bearer ${user.token}`,
+            },
+          };
+          const { data } = await axios.put(`/api/message/${editingMessage._id}`, { content: newMessage }, config);
+          setMessages((prevMessages) => prevMessages.map((msg) => (msg._id === editingMessage._id ? data : msg)));
+
+          socket.emit('new message', data);
+          setEditingMessage(null);
+          setNewMessage('');
+        } catch (error) {
+          enqueueSnackbar('Error occurred! Failed to update the message.', { variant: 'error' });
+        }
+      } else {
+        // Handle new message
+        socket.emit('stop typing', selectedChat._id);
+        try {
+          const config = {
+            headers: {
+              'Content-type': 'application/json',
+              Authorization: `Bearer ${user.token}`,
+            },
+          };
+          setNewMessage('');
+          const { data } = await axios.post('/api/message', { content: newMessage, chatId: selectedChat._id }, config);
+          socket.emit('new message', data);
+          setMessages((prevMessages) => [...prevMessages, data]);
+        } catch (error) {
+          enqueueSnackbar('Error occurred! Failed to send the message.', { variant: 'error' });
+        }
       }
     }
   };
@@ -90,6 +112,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     socket.on('connected', () => setSocketConnected(true));
     socket.on('typing', () => setIsTyping(true));
     socket.on('stop typing', () => setIsTyping(false));
+    socket.on('message deleted', (messageId) => {
+      setMessages((prevMessages) => prevMessages.filter((msg) => msg._id !== messageId));
+    });
+
 
     return () => {
       socket.disconnect();
@@ -139,6 +165,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setTyping(false);
       }
     }, timerLength);
+  };
+
+  const handleEditClick = (message) => {
+    setEditingMessage(message);
+    setNewMessage(message.content);
+  };
+
+  const handleDeleteClick = (messageId) => {
+    socket.emit('delete message', messageId);
   };
 
   return (
@@ -195,7 +230,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             {loading ? (
               <CircularProgress size={20} sx={{ alignSelf: 'center', margin: 'auto' }} />
             ) : (
-              <ScrollableChat messages={messages} />
+              <ScrollableChat messages={messages} onEditClick={handleEditClick} onDeleteClick={handleDeleteClick} />
             )}
 
             <Box
